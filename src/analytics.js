@@ -74,25 +74,48 @@ const createSchemaIfRequired = async (settings) => {
 }
 
 const parseData = (data) => {
-  console.log(`[starting] Parsing Prometheus data...`)
+  console.log(`[starting] Parsing Metric data...`)
+
   const processed = _.map(data, function(n){
-    let temp = n
-    temp.metric.value = n.value[1]
-    temp.metric.eventTimestamp = n.value[0]
+    const metrics = n['metric-datas']['metric-data']
 
-    // strip decimal
-    temp.metric.eventTimestamp = temp.metric.eventTimestamp * 1000
+    console.log(metrics[0]['metricValues'][0]['metric-value'][0])
 
-    // flatten
-    temp = temp.metric
+    let parsed = {
+      "metricId": metrics[0]['metricId'][0],
+      "metricName": metrics[0]['metricName'][0],
+      "metricPath": metrics[0]['metricPath'][0],
+      "frequency": metrics[0]['frequency'][0],
+      "startTime": "date",
+      "occurrences": "integer",
+      "current": "integer",
+      "min": "integer",
+      "max": "integer",
+      "count": "integer",
+      "sum": "integer",
+      "value": "integer"
+    }
 
-    // remove underscore from name
-    temp.name = temp.__name__
-    delete temp.__name__
 
-    temp.value = parseFloat(temp.value)
+    console.log(parsed)
 
-    return temp
+    // let temp = n
+    // temp.metric.value = n.value[1]
+    // temp.metric.eventTimestamp = n.value[0]
+    //
+    // // strip decimal
+    // temp.metric.eventTimestamp = temp.metric.eventTimestamp * 1000
+    //
+    // // flatten
+    // temp = temp.metric
+    //
+    // // remove underscore from name
+    // temp.name = temp.__name__
+    // delete temp.__name__
+    //
+    // temp.value = parseFloat(temp.value)
+
+    //return temp
   });
   console.log(`[succeeded] Parsed Prometheus data.`)
   return processed
@@ -133,8 +156,9 @@ const publishEventsToAppd = async (settings, data) => {
 
 module.exports = {
   publish: async function (settings, data) {
-    await createSchemaIfRequired(settings)
-    //const parsedData = parseData(data)
+    //await createSchemaIfRequired(settings)
+    const parsedData = parseData(data)
+
 
     //await publishEventsToAppd(settings,parsedData)
   }
