@@ -2,8 +2,7 @@ import _ from 'lodash'
 import fetch from 'node-fetch'
 import fs from 'fs'
 import xml2js from 'xml2js'
-
-// import analytics from './analytics.js'
+import analytics from './analytics.js'
 
 
 /**
@@ -59,6 +58,7 @@ const AppDRequest = async (token, path) => {
 
   if(response.ok){
     const data = await response.text()
+
     const json = await xml2js.parseStringPromise(data /*, options */)
 
     console.log(`[succeeded] '${path}' query.`)
@@ -122,17 +122,15 @@ const main = async () => {
     let data
     console.log(`[starting] Reading from AppD Server Visibility...`)
     data = await getDataFromAppD(token)
-    console.log(data)
 
+    await analytics.publish({
+      analyticsUrl: APPD_ANALYTICS_URL,
+      schemaName: SCHEMA_NAME,
+      accountName: APPD_GLOBAL_ACCOUNT_NAME,
+      apiKey: APPD_EVENTS_API_KEY
+    },data)
 
-    // await analytics.publish({
-    //   analyticsUrl: APPD_ANALYTICS_URL,
-    //   schemaName: SCHEMA_NAME,
-    //   accountName: APPD_GLOBAL_ACCOUNT_NAME,
-    //   apiKey: APPD_EVENTS_API_KEY
-    // },data)
-    //
-    // console.log(`[complete] Processing complete.`)
+    console.log(`[complete] Processing complete.`)
 
   } catch (e) {
     console.error(e)

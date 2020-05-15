@@ -1,0 +1,1 @@
+Application Infrastructure Performance|Root|Individual Nodes|LSPACAGN-M-K1YK|Hardware Resources|CPU|%Busy

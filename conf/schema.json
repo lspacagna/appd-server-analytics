@@ -1,0 +1,14 @@
+{
+  "metricId": "integer",
+  "metricName": "string",
+  "metricPath": "string",
+  "frequency": "string",
+  "startTime": "date",
+  "occurrences": "integer",
+  "current": "integer",
+  "min": "integer",
+  "max": "integer",
+  "count": "integer",
+  "sum": "integer",
+  "value": "integer"
+}
