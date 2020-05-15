@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import fetch from 'node-fetch'
 import fs from 'fs'
+import xml2js from 'xml2js'
+
 // import analytics from './analytics.js'
 
 
@@ -39,34 +41,8 @@ let APPD_EVENTS_API_KEY
  */
 let SCHEMA_NAME
 
-let LOCAL_FILE
-
-
-const prometheusRequest = async (query) => {
-  console.log(`[starting] '${query}' query...`)
-
-  const response = await fetch(`${PROMETHEUS_URL}/api/v1/query?query=${query}`, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json, text/plain, */*'
-    }
-  })
-
-  if(response.ok){
-    const data = await response.json()
-
-    console.log(`[succeeded] '${query}' query. ${data.data.result.length} data points found.`)
-    return data.data.result
-  }
-  else{
-    throw new Error(response.statusText);
-  }
-
-}
-
 const AppDRequest = async (token, path) => {
   console.log(`[starting] '${path}' request...`)
-
 
   // Create URL
   let url = `https://${APPD_CONTROLLER_URL}/controller/rest/applications/Server%20&%20Infrastructure%20Monitoring/metric-data?metric-path=`
@@ -83,10 +59,10 @@ const AppDRequest = async (token, path) => {
 
   if(response.ok){
     const data = await response.text()
-    console.log(`[succeeded] '${path}' query.`)
-    console.log(data)
+    const json = await xml2js.parseStringPromise(data /*, options */)
 
-    return data
+    console.log(`[succeeded] '${path}' query.`)
+    return json
   }
   else{
     throw new Error(response.statusText);
@@ -105,6 +81,7 @@ const getDataFromAppD = async (token) => {
     data.push(await AppDRequest(token, path))
   }
 
+  return data
 }
 
 const getAPIToken = async () =>{
@@ -135,7 +112,6 @@ const processConfig = () => {
   APPD_GLOBAL_ACCOUNT_NAME = config.appd_global_account_name
   APPD_EVENTS_API_KEY = config.appd_events_api_key
   SCHEMA_NAME = (typeof x === 'undefined') ? config.schema_name : "prometheus_events";
-  LOCAL_FILE = (typeof x === 'undefined') ? config.local_file : "data/sample.json";
 }
 
 const main = async () => {
@@ -146,7 +122,7 @@ const main = async () => {
     let data
     console.log(`[starting] Reading from AppD Server Visibility...`)
     data = await getDataFromAppD(token)
-    //console.log(data)
+    console.log(data)
 
 
     // await analytics.publish({
