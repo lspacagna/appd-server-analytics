@@ -79,45 +79,25 @@ const parseData = (data) => {
   const processed = _.map(data, function(n){
     const metrics = n['metric-datas']['metric-data']
 
-    console.log(metrics[0]['metricValues'][0]['metric-value'][0])
-
     let parsed = {
-      "metricId": metrics[0]['metricId'][0],
+      "metricId": parseInt(metrics[0]['metricId'][0]),
       "metricName": metrics[0]['metricName'][0],
       "metricPath": metrics[0]['metricPath'][0],
       "frequency": metrics[0]['frequency'][0],
-      "startTime": "date",
-      "occurrences": "integer",
-      "current": "integer",
-      "min": "integer",
-      "max": "integer",
-      "count": "integer",
-      "sum": "integer",
-      "value": "integer"
+      "startTime": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['startTimeInMillis']),
+      "occurrences": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['occurrences']),
+      "current":  parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['current']),
+      "min": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['min']),
+      "max": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['max']),
+      "count": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['count']),
+      "sum": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['sum']),
+      "value": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['value'])
     }
-
-
     console.log(parsed)
 
-    // let temp = n
-    // temp.metric.value = n.value[1]
-    // temp.metric.eventTimestamp = n.value[0]
-    //
-    // // strip decimal
-    // temp.metric.eventTimestamp = temp.metric.eventTimestamp * 1000
-    //
-    // // flatten
-    // temp = temp.metric
-    //
-    // // remove underscore from name
-    // temp.name = temp.__name__
-    // delete temp.__name__
-    //
-    // temp.value = parseFloat(temp.value)
-
-    //return temp
+    return parsed
   });
-  console.log(`[succeeded] Parsed Prometheus data.`)
+  console.log(`[succeeded] Parsed Metric data.`)
   return processed
 }
 
@@ -156,10 +136,8 @@ const publishEventsToAppd = async (settings, data) => {
 
 module.exports = {
   publish: async function (settings, data) {
-    //await createSchemaIfRequired(settings)
+    await createSchemaIfRequired(settings)
     const parsedData = parseData(data)
-
-
-    //await publishEventsToAppd(settings,parsedData)
+    await publishEventsToAppd(settings,parsedData)
   }
 };
