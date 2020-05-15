@@ -1,0 +1,19 @@
+{
+  "name": "appd-server-analytics",
+  "version": "1.0.0",
+  "description": "AppD Server Analytics",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "repository": "git@github.com:lspacagna/appd-server-analytics.git",
+  "author": "<lee@spacagna.co.uk>",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "node-fetch": "^2.6.0"
+  },
+  "scripts": {
+    "run": "node src/index.js"
+  }
+}
