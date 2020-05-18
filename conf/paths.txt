@@ -1,1 +1,3 @@
-Application Infrastructure Performance|Root|Individual Nodes|LSPACAGN-M-K1YK|Hardware Resources|CPU|%Busy
+Application Infrastructure Performance|Root|Individual Nodes|*|Hardware Resources|CPU|%Busy
+Application Infrastructure Performance|Root|Individual Nodes|*|Hardware Resources|Memory|Used %
+Application Infrastructure Performance|Root|Individual Nodes|*|Hardware Resources|Disks|dev-xvda1|Space Available
