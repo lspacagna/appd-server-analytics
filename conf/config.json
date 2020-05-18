@@ -1,0 +1,9 @@
+{
+  "appd_controller_url": ".saas.appdynamics.com",
+  "appd_api_client_name": "",
+  "appd_api_client_secret": "",
+  "appd_analytics_url": "https://analytics.api.appdynamics.com",
+  "appd_global_account_name": "xxxx_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx",
+  "appd_events_api_key": "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx",
+  "schema_name": "serverevents",
+}
