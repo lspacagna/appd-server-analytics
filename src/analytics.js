@@ -76,27 +76,35 @@ const createSchemaIfRequired = async (settings) => {
 const parseData = (data) => {
   console.log(`[starting] Parsing Metric data...`)
 
-  const processed = _.map(data, function(n){
+  let processed = _.map(data, function(n){
     const metrics = n['metric-datas']['metric-data']
 
-    let parsed = {
-      "metricId": parseInt(metrics[0]['metricId'][0]),
-      "metricName": metrics[0]['metricName'][0],
-      "metricPath": metrics[0]['metricPath'][0],
-      "frequency": metrics[0]['frequency'][0],
-      "startTime": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['startTimeInMillis']),
-      "occurrences": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['occurrences']),
-      "current":  parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['current']),
-      "min": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['min']),
-      "max": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['max']),
-      "count": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['count']),
-      "sum": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['sum']),
-      "value": parseInt(metrics[0]['metricValues'][0]['metric-value'][0]['value'])
+    const parsed = [];
+
+    for (const metric of metrics){
+      let temp = {
+        "metricId": parseInt(metric['metricId'][0]),
+        "metricName": metric['metricName'][0],
+        "metricPath": metric['metricPath'][0],
+        "frequency": metric['frequency'][0],
+        "startTime": parseInt(metric['metricValues'][0]['metric-value'][0]['startTimeInMillis']),
+        "occurrences": parseInt(metric['metricValues'][0]['metric-value'][0]['occurrences']),
+        "current":  parseInt(metric['metricValues'][0]['metric-value'][0]['current']),
+        "min": parseInt(metric['metricValues'][0]['metric-value'][0]['min']),
+        "max": parseInt(metric['metricValues'][0]['metric-value'][0]['max']),
+        "count": parseInt(metric['metricValues'][0]['metric-value'][0]['count']),
+        "sum": parseInt(metric['metricValues'][0]['metric-value'][0]['sum']),
+        "value": parseInt(metric['metricValues'][0]['metric-value'][0]['value'])
+      }
+
+      parsed.push(temp)
     }
-    console.log(parsed)
 
     return parsed
   });
+
+  processed = _.flattenDeep(processed);
+
   console.log(`[succeeded] Parsed Metric data.`)
   return processed
 }
