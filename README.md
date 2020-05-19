@@ -1,1 +1,81 @@
-# appd-server-analytics
+# AppDynamics Server Analytics
+
+## Introduction
+
+This extension connects to the AppDynamics metric service and collects the metrics specified in the /conf/paths.txt file.
+Responses are then send to the AppDynamics events service to allow querying in analytics.
+
+## Pre-requisites
+
+1. (Optional) Homebrew - for easier installation and management on MacOS
+2. Node.JS - currently targeting latest LTS version (12.16.3)
+
+```
+$ brew install node
+```
+
+3. (Optional) AWS Account with access to IAM and Lambda - only required if deploying to Lambda
+
+4. (Optional) Claudia.js - only required if deploying to Lambda
+
+```
+$ npm install claudia -g
+```
+
+5. AppDynamics controller with appropriate Analytics licence.
+
+## Installation
+
+### Clone package
+
+```
+$ git clone git@github.com:lspacagna/appd-server-analytics.git
+$ cd appd-server-analytics
+```
+
+### Choose to run extension locally or in Lambda
+
+This extension default configuration is to run locally. If you would like to run the
+extension inside a Lambda function. You need to edit src/index.js and comment
+out the last line in the file. It should look like this:
+
+```
+// runLocal()
+```
+
+### Rebuild project (only if deploying to Lambda)
+
+If you are deploying to Lambda and have commented out 'runLocal()' you will need to rebuild the project. Rebuilding will parse the source code in /src and store the built version in /dist.
+
+```
+npm run build
+```
+
+## Configuration
+
+### Configure extension controller connection
+
+Open the the conf/config.json file for editing. The default configuration is below
+
+```
+{
+  "appd_controller_url": ".saas.appdynamics.com",
+  "appd_api_client_name": "",
+  "appd_api_client_secret": "",
+  "appd_analytics_url": "https://analytics.api.appdynamics.com",
+  "appd_global_account_name": "xxxx_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx",
+  "appd_events_api_key": "xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx",
+  "schema_name": "serverevents",
+}
+
+```
+
+Parameter | Function | Default Value
+--------- | -------- | -------------
+appd_controller_url | The URL of your controller. For SaaS controllers this is `<controller-name>.saas.appdynamics.com` | `false`
+appd_api_client_name | The 'Client Name' for the API Client created to allow this extension to connect to AppDynamics APIs. See [our documentation](https://docs.appdynamics.com/display/PRO45/API+Clients) for steps to setup a new API Client. | (blank)
+appd_api_client_secret | The 'Client Secret' value generated when a new API client is created. See [our documentation](https://docs.appdynamics.com/display/PRO45/API+Clients) for steps to setup a new API Client. | (blank)
+appd_analytics_url | URL to connect to the AppD controller events service. See [our documentation](https://docs.appdynamics.com/display/PRO45/Analytics+Events+API#AnalyticsEventsAPI-AbouttheAnalyticsEventsAPI) for the URL for your controller. | (blank)
+appd_global_account_name | Account name to connect to the AppD controller. See Settings > License > Account for the value for your controller | (blank)
+appd_events_api_key | API Key to connect to AppD controller events service. See [our documentation](https://docs.appdynamics.com/display/PRO45/Managing+API+Keys) to create an API key. | (blank)
+schema_name | Reporting data to analytics requires a schema to be created. Change this value if you are connecting more than one of these extensions to more than one Prometheus deployment, or if you'd prefer to use another name. | `serverevents`
