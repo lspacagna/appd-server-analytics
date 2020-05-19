@@ -75,7 +75,34 @@ Parameter | Function | Default Value
 appd_controller_url | The URL of your controller. For SaaS controllers this is `<controller-name>.saas.appdynamics.com` | `false`
 appd_api_client_name | The 'Client Name' for the API Client created to allow this extension to connect to AppDynamics APIs. See [our documentation](https://docs.appdynamics.com/display/PRO45/API+Clients) for steps to setup a new API Client. | (blank)
 appd_api_client_secret | The 'Client Secret' value generated when a new API client is created. See [our documentation](https://docs.appdynamics.com/display/PRO45/API+Clients) for steps to setup a new API Client. | (blank)
-appd_analytics_url | URL to connect to the AppD controller events service. See [our documentation](https://docs.appdynamics.com/display/PRO45/Analytics+Events+API#AnalyticsEventsAPI-AbouttheAnalyticsEventsAPI) for the URL for your controller. | (blank)
+appd_analytics_url | URL to connect to the AppD controller events service. See [our documentation](https://docs.appdynamics.com/display/PRO45/Analytics+Events+API#AnalyticsEventsAPI-AbouttheAnalyticsEventsAPI) for the URL for your controller. | `https://analytics.api.appdynamics.com`
 appd_global_account_name | Account name to connect to the AppD controller. See Settings > License > Account for the value for your controller | (blank)
 appd_events_api_key | API Key to connect to AppD controller events service. See [our documentation](https://docs.appdynamics.com/display/PRO45/Managing+API+Keys) to create an API key. | (blank)
 schema_name | Reporting data to analytics requires a schema to be created. Change this value if you are connecting more than one of these extensions to more than one Prometheus deployment, or if you'd prefer to use another name. | `serverevents`
+
+### Configure Schema
+
+To be able to publish Prometheus data to AppD a custom schema needs to be created in your controller. This schema must match the data returned from the AppDynamics Metrics API. This is preconfigured to the standard response from AppDynamics.
+
+It is unlikely that this schema will need to be changed. If you need to change the configuration open conf/schema.json.
+
+On each run, this extension will check a schema with the chosen schema name is created. If not it will automatically create it.
+
+The extension cannot modify or delete existing schemas. If you have an existing schema which needs editing follow instructions [in our documentation](https://docs.appdynamics.com/display/PRO45/Analytics+Events+API#AnalyticsEventsAPI-update_schemaUpdateEventSchema)
+
+### Configure Metric Paths
+
+The extension has been designed to run AppD metric queries in series. By default
+the extension will run three sample requests on the paths as defined in conf/paths.txt and send the data to AppD as analytics events.
+
+Open conf/paths.txt for editing.
+
+```
+Application Infrastructure Performance|Root|Individual Nodes|*|Hardware Resources|CPU|%Busy
+Application Infrastructure Performance|Root|Individual Nodes|*|Hardware Resources|Memory|Used %
+Application Infrastructure Performance|Root|Individual Nodes|*|Hardware Resources|Disks|dev-xvda1|Space Available
+```
+
+You can add and change these to match the data that you'd like to pull from metrics into analytics events. Each path should be on its own line.
+
+Once you have added your queries you should ensure that your schema config matches the data that Prometheus will return. Failure to do this will cause an error at runtime.
