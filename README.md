@@ -105,4 +105,52 @@ Application Infrastructure Performance|Root|Individual Nodes|*|Hardware Resource
 
 You can add and change these to match the data that you'd like to pull from metrics into analytics events. Each path should be on its own line.
 
-Once you have added your queries you should ensure that your schema config matches the data that Prometheus will return. Failure to do this will cause an error at runtime.
+The above examples demonstrate wildcards are supported in the paths.
+
+To get the paths for the metrics you require see [our documentation](https://docs.appdynamics.com/display/PRO45/Metric+and+Snapshot+API#MetricandSnapshotAPI-RetrieveMetricData).
+
+## Run Extension
+
+### Run extension - locally
+If running locally the extension is ready to run. Run the extension with the
+following command.
+
+```
+$ npm run run
+```
+
+or
+
+```
+$ node dist/index.js
+```
+
+### Run extension - Lambda
+
+Create AWS profile with IAM full access, Lambda full access, and API Gateway
+Admin privileges.
+
+Add the keys to your .aws/credentials file
+
+```
+[claudia]
+aws_access_key_id = YOUR_ACCESS_KEY
+aws_secret_access_key = YOUR_ACCESS_SECRET
+```
+
+#### Send function to AWS via Claudia
+
+```
+$ claudia create --region us-east-1 --handler index.handler
+```
+
+When the deployment completes, Claudia will save a new file claudia.json in
+your project directory, with the function details, so you can invoke and
+update it easily.
+
+For more detailed instructions see: https://claudiajs.com/tutorials/hello-world-lambda.html
+
+#### Running in AWS
+
+You can either use the AWS UI to trigger the function. Or you can setup a trigger.
+A common trigger would be to run this extension once per minute.
