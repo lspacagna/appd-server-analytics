@@ -82,22 +82,28 @@ const parseData = (data) => {
     const parsed = [];
 
     for (const metric of metrics){
-      let temp = {
-        "metricId": parseInt(metric['metricId'][0]),
-        "metricName": metric['metricName'][0],
-        "metricPath": metric['metricPath'][0],
-        "frequency": metric['frequency'][0],
-        "startTime": parseInt(metric['metricValues'][0]['metric-value'][0]['startTimeInMillis']),
-        "occurrences": parseInt(metric['metricValues'][0]['metric-value'][0]['occurrences']),
-        "current":  parseInt(metric['metricValues'][0]['metric-value'][0]['current']),
-        "min": parseInt(metric['metricValues'][0]['metric-value'][0]['min']),
-        "max": parseInt(metric['metricValues'][0]['metric-value'][0]['max']),
-        "count": parseInt(metric['metricValues'][0]['metric-value'][0]['count']),
-        "sum": parseInt(metric['metricValues'][0]['metric-value'][0]['sum']),
-        "value": parseInt(metric['metricValues'][0]['metric-value'][0]['value'])
-      }
+      // After 1 hr of no data, the API returns a string instead of a 0 value.
+      if(!metric['metricName'][0] === "METRIC DATA NOT FOUND"){
+        let temp = {
+          "metricId": parseInt(metric['metricId'][0]),
+          "metricName": metric['metricName'][0],
+          "metricPath": metric['metricPath'][0],
+          "frequency": metric['frequency'][0],
+          "startTime": parseInt(metric['metricValues'][0]['metric-value'][0]['startTimeInMillis']),
+          "occurrences": parseInt(metric['metricValues'][0]['metric-value'][0]['occurrences']),
+          "current":  parseInt(metric['metricValues'][0]['metric-value'][0]['current']),
+          "min": parseInt(metric['metricValues'][0]['metric-value'][0]['min']),
+          "max": parseInt(metric['metricValues'][0]['metric-value'][0]['max']),
+          "count": parseInt(metric['metricValues'][0]['metric-value'][0]['count']),
+          "sum": parseInt(metric['metricValues'][0]['metric-value'][0]['sum']),
+          "value": parseInt(metric['metricValues'][0]['metric-value'][0]['value'])
+        }
 
-      parsed.push(temp)
+        parsed.push(temp)
+      }
+      else{
+        console.warn(`[skipped] ${metric['metricPath'][0]} contains no data. Check metric is being populated and that agents are runing.`)
+      }
     }
 
     return parsed
