@@ -4,12 +4,21 @@ import fs from 'fs'
 import xml2js from 'xml2js'
 import analytics from './analytics.js'
 
-
 /**
- *
+ * The URL used to access your controller.
  */
 let APPD_CONTROLLER_URL
+
+/**
+ * The name of the API client
+ * See https://docs.appdynamics.com/display/PRO45/API+Clients
+ */
 let APPD_API_CLIENT_NAME
+
+/**
+ * The API client secret
+ * See https://docs.appdynamics.com/display/PRO45/API+Clients
+ */
 let APPD_API_CLIENT_SECRET
 
 /**
@@ -34,9 +43,7 @@ let APPD_EVENTS_API_KEY
 
 /**
  * Reporting data to analytics requires a schema to be created.
- * Change this value if you are connecting more than one of these extensions to
- * more than one Prometheus deployment
- * Default: prometheus-metrics
+ * Default: serverevents
  */
 let SCHEMA_NAME
 
@@ -89,12 +96,14 @@ const getAPIToken = async () =>{
 
   const url = `https://${APPD_CONTROLLER_URL}/controller/api/oauth/access_token`
 
+  const controllerName = APPD_CONTROLLER_URL.split(".",1);
+
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/vnd.appd.cntrl+protobuf;v=1'
     },
-    body: `grant_type=client_credentials&client_id=${APPD_API_CLIENT_NAME}@lspac1&client_secret=${APPD_API_CLIENT_SECRET}`
+    body: `grant_type=client_credentials&client_id=${APPD_API_CLIENT_NAME}@${controllerName}&client_secret=${APPD_API_CLIENT_SECRET}`
   })
 
   const token = await response.json()
