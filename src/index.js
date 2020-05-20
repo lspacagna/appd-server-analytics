@@ -112,15 +112,20 @@ const getAPIToken = async () =>{
 }
 
 const processConfig = () => {
-  const config = JSON.parse(fs.readFileSync('conf/config.json', 'utf8'))
-
-  APPD_CONTROLLER_URL = config.appd_controller_url
-  APPD_API_CLIENT_NAME = config.appd_api_client_name
-  APPD_API_CLIENT_SECRET = config.appd_api_client_secret
-  APPD_ANALYTICS_URL = config.appd_analytics_url
-  APPD_GLOBAL_ACCOUNT_NAME = config.appd_global_account_name
-  APPD_EVENTS_API_KEY = config.appd_events_api_key
-  SCHEMA_NAME = (typeof x === 'undefined') ? config.schema_name : "prometheus_events";
+  try{
+    const config = JSON.parse(fs.readFileSync('conf/config.json', 'utf8'))
+    APPD_CONTROLLER_URL = config.appd_controller_url
+    APPD_API_CLIENT_NAME = config.appd_api_client_name
+    APPD_API_CLIENT_SECRET = config.appd_api_client_secret
+    APPD_ANALYTICS_URL = config.appd_analytics_url
+    APPD_GLOBAL_ACCOUNT_NAME = config.appd_global_account_name
+    APPD_EVENTS_API_KEY = config.appd_events_api_key
+    SCHEMA_NAME = (typeof x === 'undefined') ? config.schema_name : "serverevents";
+  }
+  catch(e){
+    console.error('[error] Unable to parse config file.')
+    process.exit(1)
+  }
 }
 
 const main = async () => {
